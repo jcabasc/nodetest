@@ -1,19 +1,12 @@
 // create web server
 
 var http = require('http');
+var router = require('./router');
 
 http.createServer(function(request, response){
     response.writeHead(200, {'Content-Type':'text/plain'});
-    response.write("Before end\n");
-    response.end('Hello world\n');
-    response.write("After end\n");
+    router.homeRoute(request, response);
+    router.userRoute(request, response);
+    response.end();
 }).listen(3000);
 console.log('Server is running at local');
-
-
-function homeRoute(request, response){
-    response.writeHead(200, {'Content-Type':'text/plain'});
-    response.write("Header\n");
-    response.write("Search\n");
-    response.write("footer\n");
-}
