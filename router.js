@@ -1,17 +1,33 @@
+var renderer = require('./renderer');
+var Profile = require('./profile');
 function homeRoute(request, response){
     if(request.url === "/"){
         //show search
-        response.write("HEADER\n");
-        response.write("SEARCH\n");
-        response.write("footer\n");
+        renderer.view('header',{},response);
+        renderer.view('search',{},response);
+        renderer.view('footer',{},response);
+        response.end();
     }
 }
 
 function userRoute(request, response){
     var username = request.url.replace('/','');
+    var values = {}
     if(username.length > 0){
-        response.write("edgar es mi amigo, no confies");
-        response.write(request.url);
+        var studentProfile = new Profile(username);
+        studentProfile.on('end', function(data){
+        values = {
+            avatarUrl: data.gravatar_url,
+            username: data.profile_name,
+            badgesCount: data.badges.length,
+            javascriptPoints: data.points.JavaScript
+        }
+        renderer.view('header',{}, response);
+        renderer.view('profile',values, response);
+        renderer.view('footer',{}, response);
+        response.end();
+        });
+
     }
 }
 
