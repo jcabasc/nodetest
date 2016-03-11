@@ -1,12 +1,21 @@
 var renderer = require('./renderer');
 var Profile = require('./profile');
+var queryString = require('querystring');
 function homeRoute(request, response){
     if(request.url === "/"){
+        if (request.method.toLowerCase() === 'get'){
         //show search
         renderer.view('header',{},response);
         renderer.view('search',{},response);
         renderer.view('footer',{},response);
         response.end();
+        }else{
+            request.on('data', function(data){
+                var query = queryString.parse(data.toString());
+                response.writeHead(302, { 'Location': '/' + query.username });
+                response.end();
+            });
+        }
     }
 }
 
